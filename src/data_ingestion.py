@@ -1,4 +1,4 @@
-import numpy as pd
+import numpy as np
 import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
@@ -14,35 +14,40 @@ def load_data(data_url: str) -> pd.DataFrame:
         print(e)
         raise
     except Exception as e:
-        print(f"Error: An unexpected error occured while loading the data.")
+        print(f"Error: An unexpected error occurred while loading the data.")
         print(e)
         raise
+
+
 
 def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
     try:
         df.drop(columns=['tweet_id'], inplace=True)
-        final_df = df(df['sentiment'].isin(['happiness', 'sadness']))
+        final_df = df[df['sentiment'].isin(['happiness', 'sadness'])]
         final_df['sentiment'].replace({'happiness': 1, 'sadness': 0}, inplace=True)
         return final_df
     except KeyError as e:
         print(f"Error: Missing column {e} in the dataframe.")
         raise
     except Exception as e:
-        print(f"Error: An unexpected error occured during preprocessing.")
+        print(f"Error: An unexpected error occurred during preprocessing.")
         print(e)
         raise
+
+
+
 
 def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame, data_path: str) -> None:
     try:
         data_path = os.path.join(data_path, 'raw')
         os.makedirs(data_path, exist_ok=True)
-        train_data.to_csv(os.path.join(data_path, "train_csv"),index=False)
-        test_data.to_csv(os.path.join(data_path, "test_csv"), index=False)
-
+        train_data.to_csv(os.path.join(data_path, "train.csv"), index=False)
+        test_data.to_csv(os.path.join(data_path, "test.csv"), index=False)
     except Exception as e:
-        print(f"Error: An unexpected error occured during preprocessing.")
+        print(f"Error: An unexpected error occurred while saving the data.")
         print(e)
         raise
+
 
 def main():
     try:
@@ -53,7 +58,6 @@ def main():
     except Exception as e:
         print(f"Error: {e}")
         print("Failed to complete the data ingestion process.")
-
 
 if __name__ == '__main__':
     main()
